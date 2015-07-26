@@ -61,7 +61,9 @@
         android:largeHeap="@bool/config_largeHeap"
         android:taskAffinity="com.cyanogenmod.eleven.task"
         android:theme="@style/Eleven.Theme">
-
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}" />
         <!-- Searchable -->
         <meta-data
             android:name="android.app.default_searchable"
