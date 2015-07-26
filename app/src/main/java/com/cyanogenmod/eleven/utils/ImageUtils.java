@@ -18,8 +18,11 @@ package com.cyanogenmod.eleven.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
+import com.baidu.music.model.BaseObject;
+import com.baidu.music.model.LrcPicList;
 import com.cyanogenmod.eleven.cache.ImageCache;
 import com.cyanogenmod.eleven.cache.ImageWorker;
 import com.cyanogenmod.eleven.lastfm.ImageSize;
@@ -55,6 +58,7 @@ public class ImageUtils {
      */
     public static String processImageUrl(final Context context, final String artistName,
                                          final String albumName, final ImageWorker.ImageType imageType) {
+        SearchManagerWrapper searchManager = new SearchManagerWrapper(context);
         switch (imageType) {
             case ARTIST:
                 // Disable last.fm calls - TODO: Find an alternative artwork provider that has
@@ -67,6 +71,10 @@ public class ImageUtils {
                         }
                     }
                 }*/
+                String avatar = searchManager
+                        .searchArtistAvatar(artistName);
+                if(!TextUtils.isEmpty(avatar))
+                return avatar;
                 break;
             case ALBUM:
                 // Disable last.fm calls - TODO: Find an alternative artwork provider that has
@@ -83,6 +91,15 @@ public class ImageUtils {
                         }
                     }
                 }*/
+                LrcPicList lrcPicList = searchManager.getLyricPic(
+                        context,albumName, null);
+                if (lrcPicList != null
+                        && lrcPicList.getErrorCode() == BaseObject.OK) {
+                    String pic = lrcPicList.getItems().get(0).getPicBig();
+                            //.getPicSmall();
+                    if(!TextUtils.isEmpty(pic))
+                    return pic;
+                }
                 break;
             default:
                 break;

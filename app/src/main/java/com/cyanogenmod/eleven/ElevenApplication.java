@@ -14,10 +14,15 @@
 package com.cyanogenmod.eleven;
 
 import android.app.Application;
+import android.os.Environment;
 import android.os.StrictMode;
 
+import com.baidu.music.manager.ImageManager;
 import com.cyanogenmod.eleven.cache.ImageCache;
+import com.cyanogenmod.eleven.utils.MusicUtils;
+import com.cyanogenmod.eleven.utils.SDKHelper;
 
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +45,13 @@ public class ElevenApplication extends Application {
         enableStrictMode();
         // Turn off logging for jaudiotagger.
         Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
+        SDKHelper.authorize(this);
+        File rootFile = new File(getExternalCacheDir().getAbsolutePath());
+        if (!rootFile.exists()) {
+            rootFile.mkdir();
+        }
+        ImageManager.init(this);
+
     }
 
     /**
