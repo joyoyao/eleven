@@ -27,7 +27,7 @@ public final class Config {
     /**
      * My personal Last.fm API key, please use your own.
      */
-    public static final String LASTFM_API_KEY = "0bec3f7ec1f914d7c960c12a916c8fb3";
+    public static final String LASTFM_API_KEY = "8a733e4c0a9f0df84cc745446b6b2f10";
 
     /**
      * Used to distinguish album art from artist images

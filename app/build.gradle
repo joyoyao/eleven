@@ -21,7 +21,6 @@ android {
         debug {
             // No debug config
         }
-
         release {
             storeFile file("/Users/way/Android/way.keystore")
             storePassword "wei0508"
@@ -33,24 +32,21 @@ android {
         debug {
             // 显示Log
             buildConfigField "boolean", "LOG_DEBUG", "true"
-
             versionNameSuffix "-debug"
             minifyEnabled false
-            zipAlignEnabled false
+            zipAlignEnabled true
             shrinkResources false
             signingConfig signingConfigs.debug
         }
         release {
             // 不显示Log
             buildConfigField "boolean", "LOG_DEBUG", "false"
-
             minifyEnabled true
             zipAlignEnabled true
             // 移除无用的resource文件
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     def outputFile = output.outputFile
