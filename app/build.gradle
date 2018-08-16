@@ -29,10 +29,10 @@ android {
             // No debug config
         }
         release {
-            storeFile file("/Users/way/Android/way.keystore")
-            storePassword "wei0508"
-            keyAlias "way"
-            keyPassword "wei0508"
+//            storeFile file("/Users/way/Android/way.keystore")
+//            storePassword "wei0508"
+//            keyAlias "way"
+//            keyPassword "wei0508"
         }
     }
     buildTypes {
@@ -43,7 +43,7 @@ android {
             minifyEnabled false
             zipAlignEnabled true
             shrinkResources true
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
         }
         release {
             // 不显示Log

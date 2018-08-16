@@ -16,15 +16,6 @@
 
 package com.cyanogenmod.eleven.locale;
 
-import android.provider.ContactsContract.FullNameStyle;
-import android.provider.ContactsContract.PhoneticNameStyle;
-import android.support.annotation.VisibleForTesting;
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.cyanogenmod.eleven.locale.HanziToPinyin.Token;
-
-
 import java.lang.Character.UnicodeBlock;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,8 +24,13 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
-import libcore.icu.AlphabeticIndex;
-import libcore.icu.AlphabeticIndex.ImmutableIndex;
+import com.cyanogenmod.eleven.locale.HanziToPinyin.Token;
+
+import android.provider.ContactsContract.FullNameStyle;
+import android.provider.ContactsContract.PhoneticNameStyle;
+import android.support.annotation.VisibleForTesting;
+import android.text.TextUtils;
+import android.util.Log;
 import libcore.icu.Transliterator;
 
 /**
@@ -74,9 +70,7 @@ public class LocaleUtils {
         private static final String EMPTY_STRING = "";
         private static final String NUMBER_STRING = "#";
 
-        protected final ImmutableIndex mAlphabeticIndex;
-        private final int mAlphabeticIndexBucketCount;
-        private final int mNumberBucketIndex;
+
         private final boolean mEnableSecondaryLocalePinyin;
 
         public LocaleUtilsBase(LocaleSet locales) {
@@ -94,23 +88,8 @@ public class LocaleUtils {
             // of Russian.
             final Locale secondaryLocale = locales.getSecondaryLocale();
             mEnableSecondaryLocalePinyin = locales.isSecondaryLocaleSimplifiedChinese();
-            AlphabeticIndex ai = new AlphabeticIndex(locales.getPrimaryLocale())
-                .setMaxLabelCount(300);
-            if (secondaryLocale != null) {
-                ai.addLabels(secondaryLocale);
-            }
-            mAlphabeticIndex = ai.addLabels(Locale.ENGLISH)
-                .addLabels(Locale.JAPANESE)
-                .addLabels(Locale.KOREAN)
-                .addLabels(LOCALE_THAI)
-                .addLabels(LOCALE_ARABIC)
-                .addLabels(LOCALE_HEBREW)
-                .addLabels(LOCALE_GREEK)
-                .addLabels(LOCALE_UKRAINIAN)
-                .addLabels(LOCALE_SERBIAN)
-                .getImmutableIndex();
-            mAlphabeticIndexBucketCount = mAlphabeticIndex.getBucketCount();
-            mNumberBucketIndex = mAlphabeticIndexBucketCount - 1;
+
+
         }
 
         public String getSortKey(String name) {
@@ -145,9 +124,9 @@ public class LocaleUtils {
                 }
                 offset += Character.charCount(codePoint);
             }
-            if (prefixIsNumeric) {
-                return mNumberBucketIndex;
-            }
+//            if (prefixIsNumeric) {
+//                return mNumberBucketIndex;
+//            }
 
             /**
              * TODO: ICU 52 AlphabeticIndex doesn't support Simplified Chinese
@@ -156,14 +135,8 @@ public class LocaleUtils {
             if (mEnableSecondaryLocalePinyin) {
                 name = HanziToPinyin.getInstance().transliterate(name);
             }
-            final int bucket = mAlphabeticIndex.getBucketIndex(name);
-            if (bucket < 0) {
-                return -1;
-            }
-            if (bucket >= mNumberBucketIndex) {
-                return bucket + 1;
-            }
-            return bucket;
+
+            return -1;
         }
 
         /**
@@ -171,7 +144,7 @@ public class LocaleUtils {
          * uses, because this class adds a bucket for phone numbers).
          */
         public int getBucketCount() {
-            return mAlphabeticIndexBucketCount + 1;
+            return 1;
         }
 
         /**
@@ -180,14 +153,8 @@ public class LocaleUtils {
          * number bucket; for all others, the AlphabeticIndex label is returned.
          */
         public String getBucketLabel(int bucketIndex) {
-            if (bucketIndex < 0 || bucketIndex >= getBucketCount()) {
-                return EMPTY_STRING;
-            } else if (bucketIndex == mNumberBucketIndex) {
-                return NUMBER_STRING;
-            } else if (bucketIndex > mNumberBucketIndex) {
-                --bucketIndex;
-            }
-            return mAlphabeticIndex.getBucketLabel(bucketIndex);
+
+            return EMPTY_STRING;
         }
 
         @SuppressWarnings("unused")
